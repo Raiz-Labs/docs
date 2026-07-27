@@ -76,7 +76,7 @@ C4Container
     Rel(api, cotacoes, "Busca cotações 1x/dia")
 ```
 
-Principais tabelas do banco (todas com `org_id` para isolamento multi-tenant via RLS): `organizations`, `org_members`, `profiles`, `talhoes`, `analises`, `prescricoes`, `estoque`, `mov_estoque`, `financeiro`, `safra`, `ordens_servico`, `commodities_cache`, `planos`.
+Principais tabelas do banco: `organizations` é o tenant. Com `org_id` direto para isolamento via RLS: `org_members`, `talhoes`, `analises`, `estoque`, `financeiro`. Isolamento transitivo via FK: `profiles` (via `user_id`), `prescricoes` (via `analise_id`), `mov_estoque` (via `estoque_id`), `safra` e `ordens_servico` (via `talhao_id`). Sem escopo de tenant, globais à plataforma: `commodities_cache`, `planos`.
 
 ## 6. Visão de Runtime
 

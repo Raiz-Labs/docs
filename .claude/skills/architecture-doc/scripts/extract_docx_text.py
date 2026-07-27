@@ -10,7 +10,7 @@ import zipfile
 def extract_text(docx_path: str) -> str:
     with zipfile.ZipFile(docx_path) as z:
         xml = z.read("word/document.xml").decode("utf-8")
-    text = re.sub(r"<w:p[ >]", "\n", xml)
+    text = re.sub(r"<w:p(?: [^>]*)?/?>", "\n", xml)
     text = re.sub(r"<[^>]+>", "", text)
     text = html.unescape(text)
     text = re.sub(r"\n{2,}", "\n", text)
@@ -23,8 +23,9 @@ def _demo() -> None:
         z.writestr(
             "word/document.xml",
             "<w:document><w:body>"
-            "<w:p><w:r><w:t>Olá mundo</w:t></w:r></w:p>"
+            "<w:p><w:r><w:t>Ol&#225; mundo</w:t></w:r></w:p>"
             "<w:p><w:r><w:t>Segunda linha</w:t></w:r></w:p>"
+            "<w:p w:rsidR=\"00A12B\"><w:r><w:t>Terceira linha</w:t></w:r></w:p>"
             "</w:body></w:document>",
         )
     tmp_path = "/tmp/_architecture_doc_selftest.docx"
@@ -32,9 +33,9 @@ def _demo() -> None:
         f.write(buf.getvalue())
 
     result = extract_text(tmp_path)
-    assert "Olá mundo" in result, f"missing greeting, got: {result!r}"
-    assert "Segunda linha" in result, f"missing second line, got: {result!r}"
-    assert result.index("Olá mundo") < result.index("Segunda linha"), "line order wrong"
+    expected = "Olá mundo\nSegunda linha\nTerceira linha"
+    assert result == expected, f"unexpected output: {result!r}"
+    assert "rsidR" not in result, result
     print("self-test OK")
 
 
