@@ -72,7 +72,7 @@ C4Context
 </mermaid-c4-example>
 
 <architecture-template>
-```markdown
+````markdown
 # Arquitetura — <Nome do Projeto>
 
 - **Status**: rascunho
@@ -115,5 +115,5 @@ Ver `architecture/adr/`.
 ## 11. Riscos e Dívida Técnica
 
 ## 12. Glossário
-```
+````
 </architecture-template>
